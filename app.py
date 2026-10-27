@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from pymongo import MongoClient, ASCENDING
 from pymongo.errors import DuplicateKeyError
 
+from fastapi.middleware.cors import CORSMiddleware
+
 load_dotenv()
 client = MongoClient(os.getenv("MONGODB_URI"), tz_aware=True)
 db = client["tutorial6"]
@@ -17,7 +19,12 @@ readings = db["readings"]
 devices.create_index([("mac", ASCENDING)], unique=True)
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Device(BaseModel):
     mac: str
